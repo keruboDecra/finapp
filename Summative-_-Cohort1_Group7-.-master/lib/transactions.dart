@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +24,23 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
 
 
+
   @override
   void initState() {
     super.initState();
     _fetchBankCards();
     _amountController.text = '';
+
+    if (_bankCards.isEmpty) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please add a bank card before selecting.'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      });
+    }
   }
 
 
@@ -48,14 +61,23 @@ class _TransactionsPageState extends State<TransactionsPage> {
       _selectedCard = _bankCards.isNotEmpty ? _bankCards[0] : null;
     });
   }
-
   void _onSelectedCard(String? value) {
     if (value != null) {
+      if (_bankCards.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please add a bank card before selecting.'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+        return;
+      }
       setState(() {
         _selectedCard = value;
       });
     }
   }
+
 
   void _onAmountChanged(String value) {
     setState(() {
@@ -109,7 +131,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
   }
 
 
-  @override
+  @override@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -151,12 +173,35 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _onSendMoneyPressed,
+              onPressed: _selectedCard == null || _bankCards.isEmpty ? null : _onSendMoneyPressed,
               child: const Text('Send Money'),
+            ),
+
+            Visibility(
+              visible: _bankCards.isEmpty,
+              child: Container(
+                color: Colors.yellow,
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.warning),
+                    const SizedBox(width: 8.0),
+                    const Expanded(
+                      child: Text(
+                        'Add a bank card before transacting.',
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
+
+
 }

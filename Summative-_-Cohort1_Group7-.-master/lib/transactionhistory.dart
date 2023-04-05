@@ -34,7 +34,7 @@ class TransactionsHistoryPage extends StatelessWidget {
           final transactions = snapshot.data!.docs;
           if (transactions.isEmpty) {
             return Center(
-              child: Text('No transactions found.'),
+              child: Text('No transactions have been performed.'),
             );
           }
           return ListView.builder(

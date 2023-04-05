@@ -51,6 +51,10 @@ class BankCardList extends StatefulWidget {
   class _BankCardListState extends State<BankCardList> {
   final List<BankCard> _bankCards = [];
 
+  bool _showFloatingButton = true;
+  double _fabPositionX = 16.0;
+  double _fabPositionY = 16.0;
+
   @override
   void initState() {
   super.initState();
@@ -171,14 +175,14 @@ class BankCardList extends StatefulWidget {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bank Cards'),
       ),
-      body: ListView.builder(
+      body: _bankCards.isNotEmpty
+          ? ListView.builder(
         itemCount: _bankCards.length,
         itemBuilder: (context, index) {
           return ListTile(
@@ -200,19 +204,24 @@ class BankCardList extends StatefulWidget {
             ),
           );
         },
-
-
+      )
+          : Center(
+        child: Text('No bank cards.\n Click on Button Below To Add.'),
       ),
-      floatingActionButton: FloatingActionButton(
+
+      floatingActionButton: Container(
+      alignment: Alignment.topRight,
+      padding: const EdgeInsets.only(top: 700, right: 16),
+      child: FloatingActionButton(
         onPressed: _addBankCard,
-        tooltip: 'Add New Card',
         child: const Icon(Icons.add),
+        tooltip: 'Add Bank Card',
       ),
-
+    ),
 
     );
-
   }
+
 
 }
 

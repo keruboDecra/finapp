@@ -1,116 +1,82 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'signup_screen.dart';
-import 'notifications.dart';
-import 'dummy.dart';
-import 'profile_page.dart'; // assuming this is the file containing the BankCardList screen
+import 'package:quickalert/quickalert.dart';
 
-
-
-
-
-class notificationsPage extends StatefulWidget {
+class notificationsPage extends StatelessWidget {
   const notificationsPage({Key? key}) : super(key: key);
 
   @override
-  _notificationsPageState createState() => _notificationsPageState();
-}
-class _notificationsPageState extends State<notificationsPage> {
-  List<TransactionData> _transactionData = [    TransactionData(      bankCardName: 'Card 1',      transactionAmount: 100.0,      transactionDate: DateTime.now(),    ),    TransactionData(      bankCardName: 'Card 2',      transactionAmount: 200.0,      transactionDate: DateTime.now(),    ),    TransactionData(      bankCardName: 'You perfomed a transaction to David, 40789743 bank account of \$ ',      transactionAmount: 300.0,      transactionDate: DateTime.now(),    ),    TransactionData(      bankCardName: 'You profile picture was changed at ',      transactionAmount: 01.30,      transactionDate: DateTime.now(),    ),    TransactionData(      bankCardName: 'You perfomed a transaction to Mary, 407847788 bank account of \$ ',      transactionAmount: 300.0,      transactionDate: DateTime.now(),    ),  ];
-
-  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Notifications'),
-        ),
-        body: ListView.builder(
-          itemCount: _transactionData.length,
-          itemBuilder: (context, index) {
-            final transaction = _transactionData[index];
-            return Card(
-              child: ListTile(
-                title: Text(transaction.bankCardName),
-                subtitle: Text(
-                  '${transaction.transactionAmount.toStringAsFixed(2)} - ${transaction.transactionDate.toString()}',
-                ),
-              ),
+    final FirebaseFirestore _db = FirebaseFirestore.instance;
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final currentUser = _auth.currentUser!;
+    final userRef = _db.collection('users').doc(currentUser.uid);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notifications'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: userRef
+            .collection('transactions')
+            .orderBy('timestamp', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
             );
-          },
-        ),
-        bottomNavigationBar: BottomAppBar(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                icon: Icon(Icons.credit_card),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
-                  // navigate to card-related page
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.notifications),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => notificationsPage()),
-                  );
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.person),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(
-                        email: '',
-                        phoneNumber: '',
-                        username: '',
-                      ),
+          }
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final transactions = snapshot.data!.docs;
+          if (transactions.isEmpty) {
+            WidgetsBinding.instance!.addPostFrameCallback((_) {
+              showAlert(context);
+            });
+          }
+          return ListView.builder(
+            itemCount: transactions.length,
+            itemBuilder: (context, index) {
+              final transaction = transactions[index];
+              final cardName = transaction['cardName'];
+              final accountNumber = transaction['accountNumber'];
+              final routingNumber = transaction['routingNumber'];
+              final amount = transaction['amount'];
+              final timestamp = transaction['timestamp'] as Timestamp;
+              final date = DateTime.fromMicrosecondsSinceEpoch(
+                  timestamp.microsecondsSinceEpoch);
+              return Card(
+                child: ListTile(
+                  title: Text('$cardName $accountNumber'),
+                  subtitle: Text('$routingNumber\n${date.toString()}'),
+                  trailing: Text(
+                    '\$${amount.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      color: amount > 0 ? Colors.green : Colors.red,
+                      fontWeight: FontWeight.bold,
                     ),
-                  );
+                  ),
+                ),
+              );
+            },
+          );
+        },
 
-                  // navigate to profile page
-                },
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
+
+  void showAlert(BuildContext context) {
+    QuickAlert.show(
+      context: context,
+      barrierDismissible: true,
+      title: "Notifications",
+      text: "0 Notifications at the moment",
+      type: QuickAlertType.info,
+    );
+  }
 }
-
-class TransactionData {
-  final String bankCardName;
-  final double transactionAmount;
-  final DateTime transactionDate;
-
-  TransactionData({
-    required this.bankCardName,
-    required this.transactionAmount,
-    required this.transactionDate,
-  });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

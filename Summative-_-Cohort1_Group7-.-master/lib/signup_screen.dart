@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,11 +50,7 @@ class _SignUpPageState extends State<SignUpPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ProfilePage(
-            email: email,
-            username: username,
-            phoneNumber: phoneNumber,
-          ),
+          builder: (context) => LoginPage(),
         ),
       );
     } on FirebaseAuthException catch (e) {
@@ -81,146 +79,146 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-        Positioned(
-        top: 0,
-        left: 0,
-        child: Image.asset(
-          'assets/box.png',
-          width: 170,
-          height: 240,
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.all(16.0),
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        body: Stack(
             children: [
-              TextFormField(
-                onChanged: (value) {
-                  email = value;
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  hintText: 'Email',
-                  prefixIcon: Icon(Icons.email),
-
+              Positioned(
+                top: 0,
+                left: 0,
+                child: Image.asset(
+                  'assets/box.png',
+                  width: 170,
+                  height: 240,
                 ),
               ),
-              SizedBox(height: 16),
-              TextFormField(
-                onChanged: (value) {
-                  password = value;
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters long';
-                  }
-                  return null;
-                },
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: _isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextFormField(
+                        onChanged: (value) {
+                          email = value;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Email',
+                          prefixIcon: Icon(Icons.email),
 
-
-
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Password',
-                        prefixIcon: Icon(Icons.lock),
-
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 16),
-                    TextFormField(
-                      onChanged: (value) {
-                        username = value;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your username';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Username',
-                        prefixIcon: Icon(Icons.person), // add an icon to the left of the input field
+                      SizedBox(height: 16),
+                      TextFormField(
+                        onChanged: (value) {
+                          password = value;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          if (value.length < 6) {
+                            return 'Password must be at least 6 characters long';
+                          }
+                          return null;
+                        },
 
+
+
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          prefixIcon: Icon(Icons.lock),
+
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 16),
-                    TextFormField(
-                      onChanged: (value) {
-                        phoneNumber = value;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your phone number';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Phone Number',
-                        prefixIcon: Icon(Icons.phone), // add an icon to the left of the input field
+                      SizedBox(height: 16),
+                      TextFormField(
+                        onChanged: (value) {
+                          username = value;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your username';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Username',
+                          prefixIcon: Icon(Icons.person), // add an icon to the left of the input field
 
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          signUp(); // call the signUp function to create a new user
-                        }
-                      },
-                      child: Text('Sign Up'),
-                    ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        onChanged: (value) {
+                          phoneNumber = value;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your phone number';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Phone Number',
+                          prefixIcon: Icon(Icons.phone), // add an icon to the left of the input field
+
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            signUp(); // call the signUp function to create a new user
+                          }
+                        },
+                        child: Text('Sign Up'),
+                      ),
 
 
-                    GestureDetector(
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => Homep(),
+                                ));
+                          },
+                          child: Text(
+                            'Continue as a guest',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            ),
+                          )),
+                      GestureDetector(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Homep(),
-                              ));
+                            context,
+                            MaterialPageRoute(builder: (context) => LoginPage()),
+                          );
                         },
                         child: Text(
-                          'Continue as a guest',
+                          ' Already have an account, Sign In',
                           style: TextStyle(
                             color: Colors.blue,
                             decoration: TextDecoration.underline,
                           ),
-                        )),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        );
-                      },
-                      child: Text(
-                        ' Already have an account, Sign In',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
                         ),
+
                       ),
 
-                    ),
-
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-    ]));
+            ]));
   }
 }

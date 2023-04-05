@@ -34,20 +34,20 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white, // Add this line to make app bar white
-        leading:Image(image: AssetImage("assets/background.png" ), height: 40,
+        backgroundColor: Colors.blue, // Add this line to make app bar white
+        leading:Image(image: AssetImage("assets/cardi.png" ), height: 40,
             width: 40),
         title: Text(
           'FinMate',
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
 
         actions: [
 
           IconButton(
-            icon: Icon(Icons.logout, color: Colors.black),
+            icon: Icon(Icons.logout, color: Colors.white),
             onPressed: () {
               showDialog(
                 context: context,
@@ -87,79 +87,83 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(width: 9),
+
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image(
-                                image: AssetImage("assets/card2.png"),
-                                height: 180,
-                                width: 240,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-
-
-                  Card(
-                    child: Row(
+              child: Container(
+                color: Colors.blue.withOpacity(0.05), // set the background color of the container
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: InkWell(
-
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BankCardList()),
-                              );
-                            },
-                            child: Image(
-                              image: AssetImage("assets/cardicon.png"),
-                              height: 30,
-                              width: 30,
-                            ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                        ),
-                        SizedBox(width: 7), // add some space between the image and the label
-                        Text(
-                          "Cards",
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image(
+                                  image: AssetImage("assets/card2.png"),
+                                  height: 180,
+                                  width: 240,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-
-
-
-                ],
+                    Card(
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BankCardList(),
+                                  ),
+                                );
+                              },
+                              child: Image(
+                                image: AssetImage("assets/cardicon.png"),
+                                height: 30,
+                                width: 30,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 7), // add some space between the image and the label
+                          Text(
+                            "Add\nCards",
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
+
+
+
+
+
             SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -174,6 +178,7 @@ class HomePage extends StatelessWidget {
                     );
                     // navigate to contacts page
                   },
+
                   child: Column(
                     children: [
                       Icon(Icons.contacts),
@@ -272,7 +277,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: Icon(Icons.credit_card),
+              icon: Icon(Icons.home),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -299,7 +304,7 @@ class HomePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ProfilePage(email: '',phoneNumber: '',username: '',),
+                      builder: (context) => ProfilePage(),
                     ),
                   );
 // navigate to profile page
