@@ -1,104 +1,70 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'dummy.dart';
-import 'notifications.dart';
-import 'profile_page.dart'; // assuming this is the file containing the BankCardList screen
-
-
-class TransactionHistoryPage extends StatefulWidget {
-  const TransactionHistoryPage({Key? key}) : super(key: key);
-
-  @override
-  _TransactionHistoryPageState createState() => _TransactionHistoryPageState();
-}
-
-class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
-  List<TransactionData> _transactionData = [
-    TransactionData(
-      bankCardName: 'Card 1',
-      transactionAmount: 100.0,
-      transactionDate: DateTime.now(),
-    ),
-    TransactionData(
-      bankCardName: 'Card 2',
-      transactionAmount: 200.0,
-      transactionDate: DateTime.now(),
-    ),
-  ];
+class TransactionsHistoryPage extends StatelessWidget {
+  const TransactionsHistoryPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseFirestore _db = FirebaseFirestore.instance;
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final currentUser = _auth.currentUser!;
+    final userRef = _db.collection('users').doc(currentUser.uid);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transaction History'),
+        title: const Text('Transactions History'),
       ),
-      body: ListView.builder(
-        itemCount: _transactionData.length,
-        itemBuilder: (context, index) {
-          final transaction = _transactionData[index];
-          return ListTile(
-            title: Text(transaction.bankCardName),
-            subtitle: Text(
-                '${transaction.transactionAmount.toStringAsFixed(2)} - ${transaction.transactionDate.toString()}'),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: userRef
+            .collection('transactions')
+            .orderBy('timestamp', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          }
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final transactions = snapshot.data!.docs;
+          if (transactions.isEmpty) {
+            return Center(
+              child: Text('No transactions found.'),
+            );
+          }
+          return ListView.builder(
+            itemCount: transactions.length,
+            itemBuilder: (context, index) {
+              final transaction = transactions[index];
+              final cardName = transaction['cardName'];
+              final accountNumber = transaction['accountNumber'];
+              final routingNumber = transaction['routingNumber'];
+              final amount = transaction['amount'];
+              final timestamp = transaction['timestamp'] as Timestamp;
+              final date = DateTime.fromMicrosecondsSinceEpoch(
+                  timestamp.microsecondsSinceEpoch);
+              return Card(
+                child: ListTile(
+                  title: Text('$cardName $accountNumber'),
+                  subtitle: Text('$routingNumber\n${date.toString()}'),
+                  trailing: Text(
+                    '\$${amount.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      color: amount > 0 ? Colors.green : Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              );
+            },
           );
         },
-
-
-
-      ),
-
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: Icon(Icons.credit_card),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HomePage()),
-                );
-                // navigate to card-related page
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => notificationsPage()),
-                );
-              },
-            ),
-            IconButton(
-                icon: Icon(Icons.person),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(email: '',phoneNumber: '',username: '',),
-                    ),
-                  );
-// navigate to profile page
-                }),
-          ],
-        ),
       ),
     );
   }
-}
-
-class TransactionData {
-  final String bankCardName;
-  final double transactionAmount;
-  final DateTime transactionDate;
-
-  TransactionData({
-    required this.bankCardName,
-    required this.transactionAmount,
-    required this.transactionDate,
-  });
 }

@@ -170,7 +170,7 @@ class HomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TransactionHistoryPage()),
+                          builder: (context) => TransactionsHistoryPage()),
                     );
                     // navigate to contacts page
                   },
@@ -187,7 +187,7 @@ class HomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TransactionHistoryPage()),
+                          builder: (context) => TransactionsHistoryPage()),
                     );
                   },
                   // navigate to transfers page
@@ -199,7 +199,7 @@ class HomePage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => TransactionPage()),
+                                builder: (context) => TransactionsPage()),
                           );
                         },
                         child: Column(

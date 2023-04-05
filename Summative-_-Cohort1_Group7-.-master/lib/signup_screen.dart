@@ -7,8 +7,6 @@ import 'profile_page.dart';
 import 'login_screen.dart';
 import 'home.dart';
 
-
-
 class SignUpPage extends StatefulWidget {
   final BuildContext context;
 
@@ -79,50 +77,68 @@ class _SignUpPageState extends State<SignUpPage> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sign Up')),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextFormField(
-                      onChanged: (value) {
-                        email = value;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Email',
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    TextFormField(
-                      onChanged: (value) {
-                        password = value;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters long';
-                        }
-                        return null;
-                      },
+      body: Stack(
+        children: [
+        Positioned(
+        top: 0,
+        left: 0,
+        child: Image.asset(
+          'assets/box.png',
+          width: 170,
+          height: 240,
+        ),
+      ),
+      Padding(
+        padding: EdgeInsets.all(16.0),
+        child: _isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                onChanged: (value) {
+                  email = value;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your email';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  hintText: 'Email',
+                  prefixIcon: Icon(Icons.email),
+
+                ),
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                onChanged: (value) {
+                  password = value;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  if (value.length < 6) {
+                    return 'Password must be at least 6 characters long';
+                  }
+                  return null;
+                },
+
+
+
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Password',
+                        prefixIcon: Icon(Icons.lock),
+
                       ),
                     ),
                     SizedBox(height: 16),
@@ -138,6 +154,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       },
                       decoration: InputDecoration(
                         hintText: 'Username',
+                        prefixIcon: Icon(Icons.person), // add an icon to the left of the input field
+
                       ),
                     ),
                     SizedBox(height: 16),
@@ -153,6 +171,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       },
                       decoration: InputDecoration(
                         hintText: 'Phone Number',
+                        prefixIcon: Icon(Icons.phone), // add an icon to the left of the input field
+
                       ),
                     ),
                     SizedBox(height: 16),
@@ -201,6 +221,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
             ),
-    );
+    ]));
   }
 }
